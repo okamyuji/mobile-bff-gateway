@@ -1,0 +1,41 @@
+services:
+  gateway:
+    build: .
+    command: ["/usr/local/bin/gateway"]
+    ports:
+      - "8080:8080"
+    environment:
+      ADDR: ":8080"
+      USER_SERVICE_URL: "http://user-service:8081/user"
+      PAYMENT_SERVICE_URL: "http://payment-service:8082/payment-orders"
+      ACCOUNT_SERVICE_URL: "http://account-service:8083/account"
+      DOWNSTREAM_TIMEOUT: "800ms"
+      CACHE_TTL: "5s"
+      RATE_LIMIT_BURST: "100"
+      RATE_LIMIT_REFILL: "100"
+      RATE_LIMIT_EVERY: "1s"
+    depends_on:
+      - user-service
+      - payment-service
+      - account-service
+
+  user-service:
+    build: .
+    entrypoint: ["/usr/local/bin/mockservice"]
+    environment:
+      SERVICE_KIND: "user"
+      ADDR: ":8081"
+
+  payment-service:
+    build: .
+    entrypoint: ["/usr/local/bin/mockservice"]
+    environment:
+      SERVICE_KIND: "payment"
+      ADDR: ":8082"
+
+  account-service:
+    build: .
+    entrypoint: ["/usr/local/bin/mockservice"]
+    environment:
+      SERVICE_KIND: "account"
+      ADDR: ":8083"

@@ -1,0 +1,7 @@
+title = "mobile-bff-gateway gitleaks rules"
+
+[allowlist]
+description = "サンプル用のJWTシークレット名は検出対象から外します。"
+regexes = [
+  '''local-development-secret''',
+]
